@@ -45,13 +45,10 @@ func tracerProvider(url string) (*traceSDK.TracerProvider, error) {
 
 func main() {
 	//TODO tasks during deployment
-	// - deploy k8sTrace container and host on docker registry
-	// - Start a new `kinD` cluster, set it up with `kubectl`
-	// - create namespace called `k8sTrace` and echo content to: -o yaml
 	// - write to-do for tomorrow tasks
 
 	// Tracer
-	tp, err := tracerProvider("https://14268-scraly-learninggobyexam-s32elsvfhfh.ws-eu74.gitpod.io/api/traces")
+	tp, err := tracerProvider("https://localhost:14268/api/traces")
 	if err != nil {
 		log.Fatal(err)
 	}
