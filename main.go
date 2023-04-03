@@ -13,8 +13,8 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/exporters/jaeger"
 	"go.opentelemetry.io/otel/sdk/resource"
-	tracesdk "go.opentelemetry.io/otel/sdk/trace"
-	semconv "go.opentelemetry.io/otel/semconv/v1.7.0"
+	traceSDK "go.opentelemetry.io/otel/sdk/trace"
+	semConv "go.opentelemetry.io/otel/semconv/v1.7.0"
 )
 
 const (
@@ -23,19 +23,19 @@ const (
 	id          = 1
 )
 
-func tracerProvider(url string) (*tracesdk.TracerProvider, error) {
+func tracerProvider(url string) (*traceSDK.TracerProvider, error) {
 	// Create the Jaeger exporter
 	exp, err := jaeger.New(jaeger.WithCollectorEndpoint(jaeger.WithEndpoint(url)))
 	if err != nil {
 		return nil, err
 	}
-	tp := tracesdk.NewTracerProvider(
+	tp := traceSDK.NewTracerProvider(
 		// Always be sure to batch in production.
-		tracesdk.WithBatcher(exp),
+		traceSDK.WithBatcher(exp),
 		// Record information about this application in a Resource.
-		tracesdk.WithResource(resource.NewWithAttributes(
-			semconv.SchemaURL,
-			semconv.ServiceNameKey.String(service),
+		traceSDK.WithResource(resource.NewWithAttributes(
+			semConv.SchemaURL,
+			semConv.ServiceNameKey.String(service),
 			attribute.String("environment", environment),
 			attribute.Int64("ID", id),
 		)),
@@ -44,6 +44,11 @@ func tracerProvider(url string) (*tracesdk.TracerProvider, error) {
 }
 
 func main() {
+	//TODO tasks during deployment
+	// - deploy k8sTrace container and host on docker registry
+	// - Start a new `kinD` cluster, set it up with `kubectl`
+	// - create namespace called `k8sTrace` and echo content to: -o yaml
+	// - write to-do for tomorrow tasks
 
 	// Tracer
 	tp, err := tracerProvider("https://14268-scraly-learninggobyexam-s32elsvfhfh.ws-eu74.gitpod.io/api/traces")
@@ -89,7 +94,7 @@ func main() {
 
 	http.Handle("/", otelHandler)
 
-	log.Println("Listening on localhost:5000")
+	log.Println("Listening on localhost:8080")
 
-	log.Fatal(http.ListenAndServe(":5000", nil))
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
