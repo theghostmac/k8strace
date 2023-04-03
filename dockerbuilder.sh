@@ -1,5 +1,12 @@
 #!/bin/bash
 
-docker build -t k8strace .
+# Get image name from user input
+read -p "Enter the name of the Docker image: " image_name
 
-say "k8sTrace image has been built"
+# Build the Docker image with the provided name
+docker build -t "$image_name" .
+
+say "Docker image built successfully. Commencing verification process..."
+
+# Verify if image was built successfully
+docker images | grep "$image_name"
